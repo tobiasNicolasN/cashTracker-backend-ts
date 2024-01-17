@@ -1,6 +1,7 @@
 import mongoose from "mongoose";
+import { DB_URI } from "./config";
 
-const mongoURL = "mongodb://localhost/misGastosDB-TS";
+const mongoURL = DB_URI!;
 
 export const connectDB = async () => {
   try {
