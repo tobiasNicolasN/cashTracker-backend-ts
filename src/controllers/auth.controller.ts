@@ -1,6 +1,7 @@
 import User from "../models/user.model";
 import bcryptjs from "bcryptjs";
 import { Request, Response } from "express";
+import { createAccessToken } from "../libs/jwt";
 
 export const register = async (req: Request, res: Response) => {
   const { username, email, password } = req.body;
@@ -15,6 +16,9 @@ export const register = async (req: Request, res: Response) => {
     });
 
     const userSaved = await newUser.save();
+    const token = await createAccessToken(userSaved.id);
+    res.cookie("token", token);
+
     res.status(201).json(userSaved);
   } catch (error) {
     console.error("Error during registration", error);
