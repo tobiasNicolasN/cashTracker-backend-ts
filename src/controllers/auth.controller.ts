@@ -6,7 +6,7 @@ import { createAccessToken } from "../libs/jwt";
 export const register = async (req: Request, res: Response) => {
   const { username, email, password } = req.body;
 
-  const passwordHash = await bcryptjs.hash(password, 10);
+  const passwordHash = await bcryptjs.hash(password, 12);
 
   try {
     const newUser = new User({
@@ -35,7 +35,18 @@ export const login = async (req: Request, res: Response) => {
     const isMatch = await bcryptjs.compare(password, userFound.password);
     if (!isMatch)
       return res.status(400).json({ message: "Incorrect password" });
-    res.status(200).json({ message: "Login successful", user: userFound });
+
+    const token = await createAccessToken(userFound.id);
+    res.cookie("token", token);
+
+    res.json({
+      id: userFound.id,
+      username: userFound.username,
+      email: userFound.email,
+      createdAt: userFound.createdAt,
+      updatedAt: userFound.updatedAt,
+    });
+    
   } catch (error) {
     res.status(500).json({ message: error });
   }
