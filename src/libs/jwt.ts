@@ -1,11 +1,11 @@
 import jwt from 'jsonwebtoken'
 import { TOKEN_SECRET } from '../config'
 
-interface JwtPayload {
+export interface IJwtPayload {
     userId: string;
   }
 
-export function createAccessToken(payload: JwtPayload){
+export function createAccessToken(payload: IJwtPayload){
     return new Promise((resolve, reject) => {
         jwt.sign({userId : payload.userId}, TOKEN_SECRET!, {expiresIn: "1d"},(error, token) => {
             if (error) reject(error)

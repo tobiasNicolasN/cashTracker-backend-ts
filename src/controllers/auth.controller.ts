@@ -57,3 +57,14 @@ export const logout = (req: Request, res: Response) => {
   });
   return res.sendStatus(200);
 };
+
+export const profile = async (req: Request, res: Response) => {
+  const userFound = await User.findById(req.body.userId);
+  if (!userFound) return res.status(400).json({ message: "user not found" });
+
+  return res.json({
+    id: userFound._id,
+    email: userFound.email,
+    username: userFound.username,
+  });
+};
