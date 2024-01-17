@@ -7,7 +7,7 @@ export interface IJwtPayload {
 
 export function createAccessToken(payload: IJwtPayload){
     return new Promise((resolve, reject) => {
-        jwt.sign({userId : payload.userId}, TOKEN_SECRET!, {expiresIn: "1d"},(error, token) => {
+        jwt.sign({userId : payload}, TOKEN_SECRET!, {expiresIn: "1d"},(error, token) => {
             if (error) reject(error)
             resolve(token)
         })

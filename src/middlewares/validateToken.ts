@@ -14,7 +14,7 @@ export const validateToken = (
   }
   try {
     const decodedToken = jwt.verify(token, TOKEN_SECRET!) as IJwtPayload;
-    req.body.userId = decodedToken;
+    req.body.userId = decodedToken.userId;
     next();
   } catch (error) {
     console.error("Error decoding token:", error);
