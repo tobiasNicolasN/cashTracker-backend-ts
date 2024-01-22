@@ -3,6 +3,11 @@ import jwt from "jsonwebtoken";
 import { TOKEN_SECRET } from "../config";
 import { IJwtPayload } from "../libs/jwt";
 
+/**
+ * Verifica si el Token existe en las cookies para dar autorizacion al usuario.
+ * Guarda el ID del usuario en el req.body.userId
+ */
+
 export const validateToken = (
   req: Request,
   res: Response,
