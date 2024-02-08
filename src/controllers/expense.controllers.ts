@@ -9,9 +9,35 @@ export const createExpense = async (req: Request, res: Response) => {
     category,
     amount,
     paymentMethod,
-    detail
+    detail,
   });
   const savedExpense = await newExpense.save();
 
   res.json(savedExpense);
+};
+
+export const getExpenses = async (req: Request, res: Response) => {
+  const expenses = await Expense.find({
+    user: req.body.userId,
+  });
+  res.json({ expenses });
+};
+
+export const getExpense = async (req: Request, res: Response) => {
+  try {
+    const expense = await Expense.findById(req.params.id);
+
+    if (!expense) {
+      return res.status(404).json({ message: "Expense not found" });
+    }
+
+    res.json({ expense });
+  } catch (error) {
+    if (error instanceof Error && error.message.includes('Cast to ObjectId failed')) {
+      return res.status(400).json({ message: 'Invalid expense ID' });
+    }
+
+    console.log(error);
+    res.status(500).json({ message: 'Internal Server Error' });
+  }
 };
