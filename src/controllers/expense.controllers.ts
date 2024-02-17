@@ -33,11 +33,35 @@ export const getExpense = async (req: Request, res: Response) => {
 
     res.json({ expense });
   } catch (error) {
-    if (error instanceof Error && error.message.includes('Cast to ObjectId failed')) {
-      return res.status(400).json({ message: 'Invalid expense ID' });
+    if (
+      error instanceof Error &&
+      error.message.includes("Cast to ObjectId failed")
+    ) {
+      return res.status(400).json({ message: "Invalid expense ID" });
     }
 
     console.log(error);
-    res.status(500).json({ message: 'Internal Server Error' });
+    res.status(500).json({ message: "Internal Server Error" });
   }
 };
+
+export const deleteExpense = async (req:Request, res: Response) => {
+  try {
+    const expense = await Expense.findByIdAndDelete(req.params.id);
+
+    if (!expense) {
+      return res.status(404).json({ message: "Expense not found" });
+    }
+    res.json({ message: "Expense deleted" });
+  } catch (error) {
+    if (
+      error instanceof Error &&
+      error.message.includes("Cast to ObjectId failed")
+    ) {
+      return res.status(400).json({ message: "Invalid expense ID" });
+    }
+
+    console.log(error);
+    res.status(500).json({ message: "Internal Server Error" });
+  }
+}
