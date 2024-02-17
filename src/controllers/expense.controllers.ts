@@ -1,18 +1,20 @@
 import { Request, Response } from "express";
 import Expense from "../models/expense.model";
+import { calculateUSD } from "../api/dolarOficial.api";
 
 export const createExpense = async (req: Request, res: Response) => {
   const { category, amount, paymentMethod, detail } = req.body;
+  const amountUSD = await calculateUSD(amount);
 
   const newExpense = new Expense({
     user: req.body.userId,
     category,
     amount,
+    amountUSD,
     paymentMethod,
     detail,
   });
   const savedExpense = await newExpense.save();
-
   res.json(savedExpense);
 };
 
@@ -45,7 +47,7 @@ export const getExpense = async (req: Request, res: Response) => {
   }
 };
 
-export const deleteExpense = async (req:Request, res: Response) => {
+export const deleteExpense = async (req: Request, res: Response) => {
   try {
     const expense = await Expense.findByIdAndDelete(req.params.id);
 
@@ -64,4 +66,4 @@ export const deleteExpense = async (req:Request, res: Response) => {
     console.log(error);
     res.status(500).json({ message: "Internal Server Error" });
   }
-}
+};

@@ -4,13 +4,14 @@ interface IExpense extends Document {
   user: mongoose.Schema.Types.ObjectId;
   category: string;
   amount: number;
+  amountUSD: number;
   paymentMethod: string;
   detail?: string;
   createdAt: Date;
   updatedAt: Date;
 }
 
-const userSchema = new mongoose.Schema(
+const expenseSchema = new mongoose.Schema(
   {
     user: {
       type: mongoose.Schema.Types.ObjectId,
@@ -25,6 +26,9 @@ const userSchema = new mongoose.Schema(
       type: Number,
       require: true,
     },
+    amountUSD: {
+      type: Number
+    },
     paymentMethod: {
       type: String,
     },
@@ -37,6 +41,6 @@ const userSchema = new mongoose.Schema(
   }
 );
 
-const Expense = mongoose.model<IExpense>("Expense", userSchema);
+const Expense = mongoose.model<IExpense>("Expense", expenseSchema);
 
 export default Expense;
