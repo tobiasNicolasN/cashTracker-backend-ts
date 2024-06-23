@@ -3,8 +3,9 @@ import Expense from "../models/expense.model";
 import { calculateUSD } from "../api/dolarOficial.api";
 
 export const createExpense = async (req: Request, res: Response) => {
-  const { category, amount, paymentMethod, detail } = req.body;
-  const amountUSD = await calculateUSD(amount);
+  const { category, amount, paymentMethod, detail, usd } = req.body;
+  const amountUSD = await calculateUSD(amount, usd);
+  console.log(usd)
 
   const newExpense = new Expense({
     user: req.body.userId,
