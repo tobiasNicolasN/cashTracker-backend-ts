@@ -6,11 +6,15 @@
         "phases": {
           "install": {
             "cmds": ["npm ci --omit=dev"]
+          },
+          "build": {
+            "cmds": ["npm run build"]
           }
         }
       }
     },
     "deploy": {
+      "startCommand": "npm start",
       "runtime": "V2",
       "numReplicas": 1,
       "sleepApplication": false,
@@ -18,3 +22,4 @@
       "restartPolicyMaxRetries": 10
     }
   }
+  
