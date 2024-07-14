@@ -61,13 +61,11 @@ export const login = async (req: Request, res: Response) => {
   }
 };
 
-export const logout = (_req: Request, res: Response) => {
-  try {
-    res.clearCookie("token");
-    return res.sendStatus(200);
-  } catch (error) {
-    res.status(400).json({ message: error });
-  }
+export const logout = (req: Request, res: Response) => {
+  res.cookie("token", "", {
+    expires: new Date(0),
+  });
+  return res.sendStatus(200);
 };
 
 export const profile = async (req: Request, res: Response) => {
