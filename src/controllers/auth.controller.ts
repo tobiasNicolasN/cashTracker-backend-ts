@@ -66,7 +66,7 @@ export const logout = (_req: Request, res: Response) => {
     expires: new Date(0),
   });
   return res
-    .sendStatus(200)
+    .status(200)
     .json({ message: "Logout realizado correctamente." });
 };
 
