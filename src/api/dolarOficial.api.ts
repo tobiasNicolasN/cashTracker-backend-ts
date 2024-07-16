@@ -20,9 +20,9 @@ export const calculateUSD = async (
   usd: string
 ): Promise<number | null> => {
   const usdArray: string[] = usd.split("-");
+
   try {
     const dolarValue: IDolar = await dolar.getDolarValue(usdArray[0]);
-    console.log("Valor del dolar: ", dolarValue)
 
     let amountUSD: number;
 
