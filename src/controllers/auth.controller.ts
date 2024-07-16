@@ -65,7 +65,9 @@ export const logout = (_req: Request, res: Response) => {
   res.cookie("token", "", {
     expires: new Date(0),
   });
-  return res.status(200).json({ message: "Logout realizado correctamente." });
+  return res
+    .status(200)
+    .json({ message: "Logout realizado correctamente." });
 };
 
 export const profile = async (req: Request, res: Response) => {
