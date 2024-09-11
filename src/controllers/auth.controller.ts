@@ -4,14 +4,7 @@ import { Request, Response } from "express";
 import { createAccessToken } from "../libs/jwt";
 
 export const register = async (req: Request, res: Response) => {
-  const { username, email, password } = req.body;
-
-  const existingUsername = await User.findOne({ username });
-  if (existingUsername)
-    return res
-      .status(400)
-      .json({ error: ["Nombre de usuario no disponible."] });
-
+  const { email, password } = req.body;
   const existingEmail = await User.findOne({ email });
   if (existingEmail)
     return res
@@ -22,7 +15,6 @@ export const register = async (req: Request, res: Response) => {
 
   try {
     const newUser = new User({
-      username,
       email,
       password: passwordHash,
     });
@@ -51,8 +43,8 @@ export const login = async (req: Request, res: Response) => {
     res.cookie("token", token);
     res.json({
       id: userFound.id,
-      username: userFound.username,
       email: userFound.email,
+      exchange: userFound.exchange,
       createdAt: userFound.createdAt,
       updatedAt: userFound.updatedAt,
     });
@@ -65,9 +57,7 @@ export const logout = (_req: Request, res: Response) => {
   res.cookie("token", "", {
     expires: new Date(0),
   });
-  return res
-    .status(200)
-    .json({ message: "Logout realizado correctamente." });
+  return res.status(200).json({ message: "Logout realizado correctamente." });
 };
 
 export const profile = async (req: Request, res: Response) => {
@@ -76,8 +66,8 @@ export const profile = async (req: Request, res: Response) => {
     return res.status(400).json({ error: ["Usuario no encontrado."] });
   return res.json({
     id: userFound._id,
-    username: userFound.username,
     email: userFound.email,
+    exchange: userFound.exchange,
     createdAt: userFound.createdAt,
     updatedAt: userFound.updatedAt,
   });

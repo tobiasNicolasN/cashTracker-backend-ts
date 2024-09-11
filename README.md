@@ -1,144 +1,160 @@
 # CashTracker Backend
-This is the backend of CashTracker, an application that provides a REST API for operations such as register, login, logout, upload, update, delete, and display expenses. It is built using Node.js, Express, and MongoDB.
+
+This is the backend of CashTracker, an application that provides a REST API for performing operations such as registering, logging in, logging out, adding, updating, deleting, and displaying expenses. It is built using TypeScript, [Node.js](https://nodejs.org/en), [Express](https://expressjs.com/), and [MongoDB](https://www.mongodb.com/).
+
+## Project Architecture
+
+### Server and Database
+
+The server uses Express.js, configured with CORS to allow requests from specific origins, with support for credentials. The database is MongoDB, managed via Mongoose for efficient data connection and manipulation.
+
+### Authentication and Authorization
+
+For authentication and authorization, the application uses [JSON Web Tokens (JWT)](https://github.com/auth0/node-jsonwebtoken). Users receive a token upon registration or login, which they must include in each request as proof of their identity.
+
+### Data Validation
+
+Data validation is handled by [Zod](https://zod.dev/), ensuring that user input meets defined schemas before being processed. This helps prevent errors and improves the security and reliability of the system.
+
+### External Currency Conversion API
+
+The application integrates the external API [DolarApi](https://dolarapi.com/docs/) to obtain the real-time dollar exchange rate. This integration allows expenses to be accurately converted to the local currency, adjusting to the current value of the dollar.
+
+### Deployment
+
+The backend is deployed using [Railway](https://railway.app/), which facilitates access and scalability.
 
 ## Requirements
-Make sure you have the following installed before getting started:
 
-- [Node.js](https://nodejs.org/en): The runtime environment.
-- [MongoDB](https://www.mongodb.com/): The NoSQL database used for data storage.
+Before starting, make sure to have the following prerequisites installed:
 
-## Configuration
+- Node.js: The runtime environment.
+- MongoDB: The NoSQL database used for data storage.
+  Configuration
+  Clone this repository to your local machine:
 
-1. Clone this repository to your local machine:
+```bash
+git clone https://github.com/tobiasNicolasN/cashTracker-Backend.git
 
-  `git clone https://github.com/tobiasNicolasN/cashTracker-Backend.git`
-  
-  `cd cashTracker-Backend`
+cd cashTracker-Backend
+```
 
-2. Install project dependencies:
-   
-The dependencies used in this project are included in "package.json":
+Install the project dependencies included in the package.json file:
 
-To install these dependencies, run:
+```bash
+npm install
+```
 
-  `npm install`
+Locate the **src/config.js** file in the project and configure the necessary environment variables:
 
-3. Locate the 'src/config.js' file in the project and configure the necessary environment variables:
-   
-  `PORT = 3000`
+- **PORT**="Specify the port where the application will run."
 
-  `MONGODB_URI = "URL of your mongodb database"`
+- **MONGODB_URI**="URL of your MongoDB database."
 
-  `TOKEN_SECRET = "Your secret key for token"`
+- **TOKEN_SECRET**="Secret key for JWT tokens."
 
-Make sure to replace MONGODB_URI with the URL of your MongoDB database and TOKEN_SECRET with a secure key for JWT token generation.
+Make sure to replace MONGODB_URI with your MongoDB database URL and TOKEN_SECRET with a secure key for generating JWT tokens.
 
-## Usage
+## Start the server:
 
-1. Start the server:
-  
-  `npm start`
+```bash
+npm start
+```
 
-The server will run on the port specified in the config.js file (default is port 3000).
+The server will run on the port specified in the configuration file (the default value is port 3000).
 
-You can use tools like [Thunder Client](https://www.thunderclient.com/) to make HTTP requests to the API.
+You can use tools like Thunder Client or Postman to make HTTP requests to the API.
 
-## API Endpoints
+## Authentication API Endpoints (AUTH)
 
-### EndPoint: /api/register
+### /api/register
 
-- HTTP Method: `POST`
-- Description: Register in the application.
-- Required Permissions: Public.
-- Request Data Structure:
-  - JSON Object:
-  
-  `{
-    "username" : "someUsername",
-    "email" : "some@email.com",
-    "password" : "somePassword"
-  }`
-  
-  - username: string(at least 4 characters)
-  - email: string
-  - password: string(at least 8 characters)
+HTTP Method: **POST**
 
-### EndPoint: /api/login
+Description: Register a new user in the application.
 
-- HTTP Method: `POST`
-- Description: Log-in to the application.
-- Required Permissions: Registered users.
-- Request Data Structure:
-  - JSON Object:
-  
-  `{
-    "email" : "some@email.com",
-    "password" : "somePassword"
-  }`
-  
-  - email: string
-  - password: string
-    
-### EndPoint: /api/logout
+Required permissions: Public.
 
-- HTTP Method: `POST`
-- Description: Log-out to the application.
-- Required Permissions: Authenticated.
+Request data:
 
-### EndPoint: /api/profile
+```json
+{
+  "email": "some@email.com",
+  "password": "somePassword"
+}
+```
 
-- HTTP Method: `GET`
-- Description: Display user data.
-- Required Permissions: Authenticated.
+### /api/login
 
-### EndPoint: /api/expenses
+HTTP Method: **POST**
 
-- HTTP Method: `GET`
-- Description: Display expenses.
-- Required Permissions: Authenticated.
+Description: Log in to the application.
 
-- HTTP Method: `POST`
-- Description: Upload expense.
-- Required Permissions: Authenticated.
-- Request Data Structure:
-  - JSON Object:
-  
-  `{
-    "amount" : 1234,
-    "category" : "someCategory",
-    "detail" : "someDetail",
-    "date" : "0000-00-00T00:00:00Z"
-  }`
+Required permissions: Registered users.
 
-  - amount: number
-  - category: string
-  - detail: string(optional)
-  - date: string(Date Format - optional)
+Request data:
 
-### EndPoint: /api/expenses/id
+```json
+{
+  "email": "some@email.com",
+  "password": "somePassword"
+}
+```
 
-- HTTP Method: `GET`
-- Description: Display expense.
-- Required Permissions: Authenticated.
-    
-- HTTP Method: `PUT`
-- Description: Update expense.
-- Required Permissions: Authenticated.
-- Request Data Structure:
-  - JSON Object:
-  
-  `{
-    "amount" : 1234,
-    "category" : "someCategory",
-    "detail" : "someDetail",
-    "date" : "0000-00-00T00:00:00Z"
-  }`
+### /api/logout
 
-  - amount: number
-  - category: string
-  - detail: string(optional)
-  - date: string(Date Format - optional)
-    
-- HTTP Method: `DELETE`
-- Description: Delete expense.
-- Required Permissions: Authenticated.
+HTTP Method: **POST**
+
+Description: Log out of the application.
+
+Required permissions: Authenticated.
+
+### /api/profile
+
+HTTP Method: **GET**
+
+Description: Displays the authenticated user's data.
+
+Required permissions: Authenticated.
+
+## Expenses API Endpoints
+
+### /api/expenses
+
+HTTP Method: **GET**
+
+Description: Displays the authenticated user's expenses.
+
+Required permissions: Authenticated.
+
+HTTP Method: **POST**
+
+Description: Register a new expense.
+
+Required permissions: Authenticated.
+
+Request data:
+
+```json
+{
+  "amount": 1234,
+  "exchangeRate": "blue-compra",
+  "category": "someCategory",
+  "detail": "someDetail",
+  "date": "0000-00-00T00:00:00Z"
+}
+```
+
+### /api/expenses/:id
+
+HTTP Method: **GET**
+
+Description: Displays a specific expense.
+
+Required permissions: Authenticated.
+
+HTTP Method: **DELETE**
+
+Description: Deletes an existing expense.
+
+Required permissions: Authenticated.
