@@ -3,7 +3,7 @@ import z, { AnyZodObject } from "zod";
 
 /**
  * Valida los datos recibidos desde el Request por un esquema creado utilizando Zod
- * @param AnyZodObject 
+ * @param AnyZodObject
  */
 
 export const validatorSchema =
@@ -16,6 +16,6 @@ export const validatorSchema =
       if (error instanceof z.ZodError)
         return res
           .status(400)
-          .json({ error: error.issues.map((e) => e.message) });
+          .json({ error: error.issues.map((e) => e.message).join(" ") });
     }
   };

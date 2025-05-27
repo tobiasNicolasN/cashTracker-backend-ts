@@ -4,7 +4,7 @@ import morgan from "morgan";
 import cookieParser from "cookie-parser";
 import expensesRoutes from "./routes/expense.routes";
 import cors from "cors";
-import { ORIGIN_URL } from "./config";
+import { ORIGIN_URL } from "./config/dotenv";
 
 const app = express();
 

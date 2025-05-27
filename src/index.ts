@@ -1,6 +1,6 @@
 import app from "./app";
-import { PORT } from "./config";
-import { connectDB } from "./db";
+import { PORT } from "./config/dotenv";
+import { connectDB } from "./config/db";
 
 connectDB();
 app.listen(PORT);

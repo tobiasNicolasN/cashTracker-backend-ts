@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import { DB_URI } from "./config";
+import { DB_URI } from "./dotenv";
 
 const mongoURL = DB_URI!;
 
@@ -10,7 +10,7 @@ const mongoURL = DB_URI!;
 export const connectDB = async (url?: string) => {
   try {
     await mongoose.connect(url || mongoURL);
-    console.log(">>> DB is connected");
+    console.log("DB is connected");
   } catch (error) {
     console.log(error);
   }

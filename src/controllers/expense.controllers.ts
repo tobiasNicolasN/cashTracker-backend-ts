@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import Expense from "../models/expense.model";
-import { calculateUSD } from "../api/dolarOficial.api";
+import { calculateUSD } from "../services/dolarOficial.api";
 
 export const createExpense = async (req: Request, res: Response) => {
   const { category, amount, paymentMethod, detail, exchangeRate } = req.body;
