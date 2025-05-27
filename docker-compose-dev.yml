@@ -1,0 +1,26 @@
+services:
+  cash-tracker:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    ports: 
+      - "${SERVER_PORT}:3000"
+    links:
+      - mongo
+    volumes:
+      - .:/app
+      - /app/node_modules
+
+  mongo:
+    image: mongo
+    restart: always
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=${DB_USERNAME}
+      - MONGO_INITDB_ROOT_PASSWORD=${DB_PASSWORD}
+    ports: 
+      - "${DB_PORT}:27017"
+    volumes:
+      - mongoDB:/data/db
+
+volumes:
+  mongoDB:

@@ -1,15 +1,5 @@
 import mongoose from "mongoose";
-
-interface IExpense extends Document {
-  user: mongoose.Schema.Types.ObjectId;
-  category: string;
-  amount: number;
-  amountUSD: number;
-  paymentMethod: string;
-  detail?: string;
-  createdAt: Date;
-  updatedAt: Date;
-}
+import { IExpense } from "../interfaces/data.interface";
 
 const expenseSchema = new mongoose.Schema(
   {
@@ -20,14 +10,14 @@ const expenseSchema = new mongoose.Schema(
     },
     category: {
       type: String,
-      require: true,
+      required: true,
     },
     amount: {
       type: Number,
-      require: true,
+      required: true,
     },
     amountUSD: {
-      type: Number
+      type: Number,
     },
     paymentMethod: {
       type: String,
