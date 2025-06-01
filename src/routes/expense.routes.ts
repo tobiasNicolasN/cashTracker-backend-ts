@@ -1,6 +1,11 @@
 import { Router } from "express";
 import { validateToken } from "../middlewares/validateToken.middleware";
-import { createExpense, getExpenses, getExpense, deleteExpense } from "../controllers/expense.controllers";
+import {
+  createExpense,
+  getExpenses,
+  getExpense,
+  deleteExpense,
+} from "../controllers/expenses.controller";
 
 const router = Router();
 

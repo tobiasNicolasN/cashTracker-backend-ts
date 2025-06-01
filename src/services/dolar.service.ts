@@ -26,6 +26,11 @@ export const calculateUSD = async (
   amount: number,
   usd: string
 ): Promise<number | null> => {
+  if (!usd) {
+    console.error("No se encontró el tipo de dólar:", usd);
+    return null;
+  }
+
   const usdArray: string[] = usd.split("-");
 
   try {

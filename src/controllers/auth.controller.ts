@@ -41,7 +41,7 @@ export const register = async (req: Request, res: Response) => {
     });
     console.log(
       "[auth.register] Usuario registrado correctamente:",
-      savedUser._id
+      savedUser.id
     );
   } catch (error) {
     res.status(500).json({ error: error });
@@ -80,7 +80,7 @@ export const login = async (req: Request, res: Response) => {
       createdAt: userFound.createdAt,
       updatedAt: userFound.updatedAt,
     });
-    console.log("[auth.login] Sesion iniciada correctamente:", userFound._id);
+    console.log("[auth.login] Sesion iniciada correctamente:", userFound.id);
   } catch (error) {
     res.status(500).json({ message: error });
     console.error("[auth.login] Se ha producido un error:", error);
@@ -121,7 +121,7 @@ export const profile = async (req: Request, res: Response) => {
     });
     console.log(
       "[auth.profile] Perfil cargado correctamente. Usuario:",
-      userFound._id
+      userFound.id
     );
   } catch (error) {
     res.status(400).json({ error: error });
