@@ -59,10 +59,32 @@ export const createExpense = async (req: Request, res: Response) => {
 };
 
 export const getExpenses = async (req: Request, res: Response) => {
-  const expenses = await Expense.find({
-    user: req.body.userId,
-  });
-  res.json({ expenses });
+  try {
+    const uid: string = req.body.userId;
+
+    const expenses = await Expense.find({
+      user: uid,
+    });
+
+    if (expenses.length === 0) {
+      console.error(
+        "[expenses.getExpenses] El usuario no tiene gastos registrados."
+      );
+      res.status(404).json({ error: "El usuario no tiene gastos registrados" });
+    }
+
+    console.log(
+      "[expenses.getExpenses] Gastos obtenidos correctamente, total:",
+      expenses.length
+    );
+    res.status(200).json(expenses);
+  } catch (error) {
+    console.log(
+      "[expenses.getExpenses] Se ha producido un error al obtener los gastos:",
+      error
+    );
+    res.status(400).json({ error: error });
+  }
 };
 
 export const getExpense = async (req: Request, res: Response) => {
