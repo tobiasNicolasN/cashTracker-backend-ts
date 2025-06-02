@@ -1,17 +1,37 @@
-import { IDolar } from "../interfaces/dolar.interface";
+import { IDolar, IDolarHistory } from "../interfaces/dolar.interface";
 import axios from "axios";
 
-const BASE_URL = "https://dolarapi.com/v1/dolares";
+const DOLAR_NOW_API_URL = "https://dolarapi.com/v1/dolares"; // Base para buscar el valor de un dolar en especifico en este momento
+const DOLLAR_HISTORY_API_URL =
+  "https://api.argentinadatos.com/v1/cotizaciones/dolares"; // Todos los valores del dolar registrados desde 2011
 
 /** Crea una instancia de Axios con una URL base predeterminada */
-export const instance = axios.create({
-  baseURL: BASE_URL,
+export const instanceDolarNow = axios.create({
+  baseURL: DOLAR_NOW_API_URL,
 });
 
 export const dolar = {
-  getDolarValue: async (usd: string): Promise<IDolar> => {
-    const response = await instance.get(usd);
+  getCurrentDollarValue: async (usd: string): Promise<IDolar> => {
+    const response = await instanceDolarNow.get(usd);
     return response.data as IDolar;
+  },
+  getDollarHistoryValue: async (
+    usd: string,
+    date: Date
+  ): Promise<IDolarHistory> => {
+    const response = await axios.get(DOLLAR_HISTORY_API_URL, {
+      timeout: 10000,
+    });
+    const data: IDolarHistory[] = response.data;
+
+    const isoDate = date.toISOString().split("T")[0]; // Formato YYYY-MM-DD
+    const casa = usd.split("-")[0];
+
+    const dollarValue = data.filter(
+      (dollar) => dollar.fecha === isoDate && dollar.casa === casa
+    );
+    
+    return dollarValue[0];
   },
 };
 
@@ -24,7 +44,8 @@ export const dolar = {
 
 export const calculateUSD = async (
   amount: number,
-  usd: string
+  usd: string,
+  date?: Date
 ): Promise<number | null> => {
   if (!usd) {
     console.error("No se encontró el tipo de dólar:", usd);
@@ -34,7 +55,9 @@ export const calculateUSD = async (
   const usdArray: string[] = usd.split("-");
 
   try {
-    const dolarValue: IDolar = await dolar.getDolarValue(usdArray[0]);
+    const dolarValue: IDolar | IDolarHistory = !date
+      ? await dolar.getCurrentDollarValue(usdArray[0])
+      : await dolar.getDollarHistoryValue(usd, date);
 
     let amountUSD: number;
 

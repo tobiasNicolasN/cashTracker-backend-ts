@@ -7,6 +7,13 @@ export interface IDolar {
     fechaActualizacion : string
 }
 
+export interface IDolarHistory {
+    casa: string,
+    compra: number,
+    venta: number,
+    fecha: string
+}
+
 export enum DolarType {
     OFICIAL_COMPRA = "oficial-compra",
     OFICIAL_VENTA = "oficial-venta",

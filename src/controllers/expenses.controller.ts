@@ -5,7 +5,8 @@ import { getExchange } from "../services/user.service";
 
 export const createExpense = async (req: Request, res: Response) => {
   try {
-    const { category, amount, paymentMethod, detail, exchangeRate } = req.body;
+    const { category, amount, paymentMethod, detail, exchangeRate, date } =
+      req.body;
     const uid: string = req.body.userId;
 
     // define el tipo de cambio
@@ -21,7 +22,13 @@ export const createExpense = async (req: Request, res: Response) => {
         .json({ error: "No se encontro ninguna moneda de cambio." });
     }
 
-    const amountUSD = await calculateUSD(amount, exchange);
+    // Convierte al formato correcto de la fecha
+    let creationDate: Date | undefined = undefined;
+    if (date) {
+      creationDate = new Date(date);
+    }
+
+    const amountUSD = await calculateUSD(amount, exchange, creationDate);
 
     // Verifica que se haya realizado la conversion correctamente
     if (!amountUSD) {
@@ -70,7 +77,9 @@ export const getExpenses = async (req: Request, res: Response) => {
       console.error(
         "[expenses.getExpenses] El usuario no tiene gastos registrados."
       );
-      return res.status(404).json({ error: "El usuario no tiene gastos registrados" });
+      return res
+        .status(404)
+        .json({ error: "El usuario no tiene gastos registrados" });
     }
 
     console.log(
@@ -132,7 +141,7 @@ export const deleteExpense = async (req: Request, res: Response) => {
       "[expenses.deleteExpense] Se elimino el gasto correctamente, id:",
       expenseId
     );
-    res.sendStatus(204)
+    res.sendStatus(204);
   } catch (error) {
     console.error(
       "[expenses.deleteExpense] Se ha producido un error al borrar el gasto:",
