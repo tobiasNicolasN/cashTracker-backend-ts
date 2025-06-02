@@ -60,7 +60,7 @@ export const createExpense = async (req: Request, res: Response) => {
 
 export const getExpenses = async (req: Request, res: Response) => {
   try {
-    const uid: string = req.body.userId;
+    const uid = req.body.userId;
 
     const expenses = await Expense.find({
       userId: uid,
@@ -70,7 +70,7 @@ export const getExpenses = async (req: Request, res: Response) => {
       console.error(
         "[expenses.getExpenses] El usuario no tiene gastos registrados."
       );
-      res.status(404).json({ error: "El usuario no tiene gastos registrados" });
+      return res.status(404).json({ error: "El usuario no tiene gastos registrados" });
     }
 
     console.log(
@@ -103,7 +103,7 @@ export const getExpense = async (req: Request, res: Response) => {
       "[expenses.getExpense] Se ha obtenido el gasto correctamente:",
       expense[0].id
     );
-    res.json(expense[0]);
+    res.status(200).json(expense[0]);
   } catch (error) {
     console.error(
       "[expenses.getExpense] Se ha producido un error al obtener el gasto:",
@@ -115,21 +115,29 @@ export const getExpense = async (req: Request, res: Response) => {
 
 export const deleteExpense = async (req: Request, res: Response) => {
   try {
-    const expense = await Expense.findByIdAndDelete(req.params.id);
+    const expenseId = req.params.id;
+    const uid = req.body.userId;
+
+    const expense = await Expense.findOneAndDelete({
+      _id: expenseId,
+      userId: uid,
+    });
 
     if (!expense) {
-      return res.status(404).json({ message: "Expense not found" });
-    }
-    res.json({ message: "Expense deleted" });
-  } catch (error) {
-    if (
-      error instanceof Error &&
-      error.message.includes("Cast to ObjectId failed")
-    ) {
-      return res.status(400).json({ message: "Invalid expense ID" });
+      console.error("[expenses.deleteExpense] No se ha encontrado el gasto.");
+      return res.status(404).json({ error: "No se ha encontrado el gasto." });
     }
 
-    console.log(error);
-    res.status(500).json({ message: "Internal Server Error" });
+    console.log(
+      "[expenses.deleteExpense] Se elimino el gasto correctamente, id:",
+      expenseId
+    );
+    res.sendStatus(204)
+  } catch (error) {
+    console.error(
+      "[expenses.deleteExpense] Se ha producido un error al borrar el gasto:",
+      error
+    );
+    res.status(400).json({ error: error });
   }
 };
