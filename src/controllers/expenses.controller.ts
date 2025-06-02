@@ -34,7 +34,7 @@ export const createExpense = async (req: Request, res: Response) => {
     }
 
     const newExpense = new Expense({
-      user: uid,
+      userId: uid,
       category: category.toLowerCase(),
       amount,
       amountUSD,
@@ -63,7 +63,7 @@ export const getExpenses = async (req: Request, res: Response) => {
     const uid: string = req.body.userId;
 
     const expenses = await Expense.find({
-      user: uid,
+      userId: uid,
     });
 
     if (expenses.length === 0) {
@@ -89,23 +89,27 @@ export const getExpenses = async (req: Request, res: Response) => {
 
 export const getExpense = async (req: Request, res: Response) => {
   try {
-    const expense = await Expense.findById(req.params.id);
+    const expenseId = req.params.id;
+    const uid = req.body.userId;
 
-    if (!expense) {
-      return res.status(404).json({ message: "Expense not found" });
+    const expense = await Expense.find({ _id: expenseId, userId: uid });
+
+    if (!expense[0]) {
+      console.error("[expenses.getExpense] No se ha encontrado el gasto.");
+      return res.status(404).json({ error: "No se ha encontrado el gasto." });
     }
 
-    res.json({ expense });
+    console.log(
+      "[expenses.getExpense] Se ha obtenido el gasto correctamente:",
+      expense[0].id
+    );
+    res.json(expense[0]);
   } catch (error) {
-    if (
-      error instanceof Error &&
-      error.message.includes("Cast to ObjectId failed")
-    ) {
-      return res.status(400).json({ message: "Invalid expense ID" });
-    }
-
-    console.log(error);
-    res.status(500).json({ message: "Internal Server Error" });
+    console.error(
+      "[expenses.getExpense] Se ha producido un error al obtener el gasto:",
+      error
+    );
+    res.status(400).json({ error: error });
   }
 };
 
