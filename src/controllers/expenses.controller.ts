@@ -23,15 +23,15 @@ export const createExpense = async (req: Request, res: Response) => {
     }
 
     // Convierte al formato correcto de la fecha
-    let creationDate: Date | undefined = undefined;
+    let expensePaidAt: Date | undefined = undefined;
     if (date) {
-      creationDate = new Date(date);
+      expensePaidAt = new Date(date);
     }
 
-    const amountUSD = await calculateUSD(amount, exchange, creationDate);
+    const usd = await calculateUSD(amount, exchange, expensePaidAt);
 
     // Verifica que se haya realizado la conversion correctamente
-    if (!amountUSD) {
+    if (!usd) {
       console.error(
         "[expenses.createExpense] Se ha producido un error al subir el gasto."
       );
@@ -40,13 +40,21 @@ export const createExpense = async (req: Request, res: Response) => {
         .json({ error: "Se ha producido un error al subir el gasto." });
     }
 
+    const amountUSD = usd.amountUSD;
+    const usdValue = usd.usdValue;
+
+    const now = new Date();
+
     const newExpense = new Expense({
       userId: uid,
       category: category.toLowerCase(),
+      paymentMethod: paymentMethod.toLowerCase(),
       amount,
       amountUSD,
-      paymentMethod: paymentMethod.toLowerCase(),
+      exchangeRateUSD: usdValue,
+      exchange: exchange,
       detail: detail?.toLowerCase() || "",
+      expensePaidAt: expensePaidAt || now,
     });
 
     const savedExpense = await newExpense.save();
@@ -77,9 +85,7 @@ export const getExpenses = async (req: Request, res: Response) => {
       console.error(
         "[expenses.getExpenses] El usuario no tiene gastos registrados."
       );
-      return res
-        .status(404)
-        .json({ error: "El usuario no tiene gastos registrados" });
+      return res.status(200).json(expenses);
     }
 
     console.log(

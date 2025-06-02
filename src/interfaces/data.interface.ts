@@ -7,6 +7,8 @@ export interface IExpense extends mongoose.Document {
   amountUSD: number;
   paymentMethod: string;
   detail?: string;
+  exchange: string;
+  expensePaidAt: Date;
   createdAt: Date;
   updatedAt: Date;
 }

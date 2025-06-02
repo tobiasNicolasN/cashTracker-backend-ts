@@ -12,6 +12,9 @@ const expenseSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+    paymentMethod: {
+      type: String,
+    },
     amount: {
       type: Number,
       required: true,
@@ -19,11 +22,17 @@ const expenseSchema = new mongoose.Schema(
     amountUSD: {
       type: Number,
     },
-    paymentMethod: {
+    exchangeRateUSD: {
+      type: Number,
+    },
+    exchange: {
       type: String,
     },
     detail: {
       type: String,
+    },
+    expensePaidAt: {
+      type: Date,
     },
   },
   {

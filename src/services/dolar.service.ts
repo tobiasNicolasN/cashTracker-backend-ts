@@ -30,7 +30,7 @@ export const dolar = {
     const dollarValue = data.filter(
       (dollar) => dollar.fecha === isoDate && dollar.casa === casa
     );
-    
+
     return dollarValue[0];
   },
 };
@@ -39,14 +39,14 @@ export const dolar = {
  * Utiliza DolarApi.com en tiempo real para setear el valor en USD
  * @param amount El monto a ser transformado a USD
  * @param usd Recibe el tipo de dolar "blue-compra"
- * @returns El monto en USD
+ * @returns El monto en USD y el precio del dolar
  */
 
 export const calculateUSD = async (
   amount: number,
   usd: string,
   date?: Date
-): Promise<number | null> => {
+): Promise<{ amountUSD: number; usdValue: number } | null> => {
   if (!usd) {
     console.error("No se encontró el tipo de dólar:", usd);
     return null;
@@ -60,14 +60,19 @@ export const calculateUSD = async (
       : await dolar.getDollarHistoryValue(usd, date);
 
     let amountUSD: number;
+    let dollar: number | undefined = undefined;
 
-    usdArray[1] === "compra"
-      ? (amountUSD = amount / dolarValue.compra)
-      : (amountUSD = amount / dolarValue.venta);
+    if (usdArray[1] === "compra") {
+      dollar = dolarValue.compra;
+    } else {
+      dollar = dolarValue.venta;
+    }
+
+    amountUSD = amount / dollar;
 
     amountUSD = parseFloat(amountUSD.toFixed(2));
 
-    return amountUSD;
+    return { amountUSD: amountUSD, usdValue: dollar };
   } catch (error) {
     console.error("Error al calcular el monto en dólares:", error);
     return null;
